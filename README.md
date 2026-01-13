@@ -9,6 +9,32 @@ A Model Context Protocol (MCP) server that provides tools for querying Azure ret
 3. **Configure Claude Desktop** (see [QUICK_START.md](QUICK_START.md))
 4. **Ask Claude**: "What's the price of a Standard_D2s_v3 VM in East US?"
 
+## 🐳 Docker
+
+```bash
+# Build
+docker build -t azure-pricing-mcp .
+
+# Run with SSE (default)
+docker run --rm -p 8080:8080 azure-pricing-mcp
+# Endpoints: GET /sse (event stream), POST /mcp (messages)
+
+# Run with stdio instead
+docker run --rm -i -e MCP_TRANSPORT=stdio azure-pricing-mcp
+
+# Optional: push to your registry
+# docker tag azure-pricing-mcp <registry>/azure-pricing-mcp:latest
+# docker push <registry>/azure-pricing-mcp:latest
+```
+
+Default Docker image serves MCP over SSE HTTP; stdio is still available when you set `MCP_TRANSPORT=stdio` (keep `-i` in that mode).
+
+Environment knobs:
+- `MCP_TRANSPORT` (`sse`|`stdio`, default `sse`)
+- `PORT`/`HOST` (default `8080`/`0.0.0.0`)
+- `MCP_SSE_PATH` (default `/sse`)
+- `MCP_MESSAGE_PATH` (default `/mcp`)
+
 ## ✨ Features
 
 - **🔍 Azure Price Search**: Search for Azure service prices with flexible filtering
