@@ -33,7 +33,7 @@ Environment knobs:
 - `MCP_TRANSPORT` (`sse`|`stdio`, default `sse`)
 - `PORT`/`HOST` (default `8080`/`0.0.0.0`)
 - `MCP_SSE_PATH` (default `/sse`)
-- `MCP_MESSAGE_PATH` (default `/mcp`)
+- `MCP_MESSAGE_PATH` (default `/messages`; server mounts both `/messages` and `/messages/` for compatibility)
 - `CURRENCY_CODE` (default `USD`; tools also accept per-call `currency_code` like `EUR`)
 
 ## ✅ Recent verifications
