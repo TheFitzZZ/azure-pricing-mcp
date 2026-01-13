@@ -144,7 +144,55 @@ async def explore_vm_skus():
         except Exception as exc:  # noqa: BLE001
             print(f"  error probing {sku}: {exc}")
 
+
+async def test_currency_handling():
+    """Verify prices can be retrieved in multiple currencies for a known SKU."""
+    print("\n=== Currency check (USD vs EUR) ===\n")
+
+    sku = "D4as v7"
+    region = "brazilsouth"
+    service = "Virtual Machines"
+
+    async def fetch(currency: str):
+        async with pricing_server:
+            return await pricing_server.search_azure_prices(
+                service_name=service,
+                sku_name=sku,
+                region=region,
+                currency_code=currency,
+                limit=1,
+            )
+
+    usd = await fetch("USD")
+    eur = await fetch("EUR")
+
+    def extract(result: dict) -> dict:
+        item = (result.get("items") or [None])[0] or {}
+        return {
+            "count": result.get("count"),
+            "price": item.get("retailPrice"),
+            "currency": result.get("currency"),
+            "product": item.get("productName"),
+            "unit": item.get("unitOfMeasure"),
+            "region": item.get("armRegionName"),
+        }
+
+    usd_sample = extract(usd)
+    eur_sample = extract(eur)
+
+    print("USD sample:")
+    print(json.dumps(usd_sample, indent=2))
+    print("EUR sample:")
+    print(json.dumps(eur_sample, indent=2))
+
+    # Basic sanity: both returned at least one result
+    if (usd_sample["count"] or 0) == 0:
+        print("Warning: USD query returned no items")
+    if (eur_sample["count"] or 0) == 0:
+        print("Warning: EUR query returned no items")
+
 if __name__ == "__main__":
     asyncio.run(test_mcp_tool_call())
     asyncio.run(test_edge_cases())
     asyncio.run(explore_vm_skus())
+    asyncio.run(test_currency_handling())

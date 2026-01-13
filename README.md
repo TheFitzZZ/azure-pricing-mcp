@@ -34,6 +34,12 @@ Environment knobs:
 - `PORT`/`HOST` (default `8080`/`0.0.0.0`)
 - `MCP_SSE_PATH` (default `/sse`)
 - `MCP_MESSAGE_PATH` (default `/mcp`)
+- `CURRENCY_CODE` (default `USD`; tools also accept per-call `currency_code` like `EUR`)
+
+## ✅ Recent verifications
+
+- SSE container runs on :8080 (GET /sse, POST /mcp) and stdio remains available via `MCP_TRANSPORT=stdio`.
+- Currency handling confirmed: USD vs EUR pricing returns distinct values for VM SKU `D4as v7` in `brazilsouth`.
 
 ## ✨ Features
 
